@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1 class="mt-5">
+        Редактирование вопроса
+    </h1>
+
+
+
+    <div class="add-product-form-wrapper">
+        <div class="row">
+            <div class="col-sm-9">
+                <div class="row">
+                    <div class="col-sm-12 col-md-3">
+                        <div class="">
+                            <label class="middle">Вопрос:</label>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-9">
+                        <textarea class="product-meta-field " name="vopros"
+                                  title="Введите вопрос для проверки.">{{ question.description }}</textarea>
+                        <div class="errorField" style="display: none;">Необходимо ввести вопрос</div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 col-md-3">
+                        <div class="">
+                            <label class="middle">Ответы:</label>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-9">
+                        <table class="widget-table otvet-table main-table">
+                            <tbody class="vopros-otvet-elements">
+
+                            {% for answer in answers %}
+
+                                <tr data-id="{{ answer.id }}" class="variant-row">
+                                    <td class="hide-content">
+                                        <div class="trigger-item">
+                                            <textarea name="otvet">{{ answer.description }}</textarea>
+                                        </div>
+                                    </td>
+                                    <td class="actions">
+                                        <ul class="action-list">
+                                            <li class="mover" data-id="{{ answer.id }}"><a href="javascript:void(0);"><i
+                                                    class="fa fa-arrows ui-sortable-handle"></i></a></li>
+                                            <li class="visible_otvet tool-tip-bottom {% if answer.approved == True %}active{% endif %} "
+                                                data-id="{{ answer.id }}"><a
+                                                    class="tool-tip-bottom fa fa-lightbulb-o {% if answer.approved == True %}active{% endif %}"
+                                                    href="javascript:void(0);"
+                                                    title="{% if answer.approved == True %}Правильный{% else %}Не правильный{% endif %} "></a>
+                                            </li>
+                                            <li class="delete-row-otvet" data-id="{{ answer.id }}"><a
+                                                    class="tool-tip-bottom fa fa-trash"
+                                                    href="javascript:void(0);"
+                                                    title="Удалить ответ"></a></li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 col-md-3">
+                        <label class="dashed">Выберите группу: </label>
+                    </div>
+                    <div class="col-sm-12 col-md-9">
+                        <select class="last-items-dropdown form-control select-groups-user-vopr">
+                            <option value="-1">Все</option>
+                            <option value="0">Общие</option>
+                            <option value="43">CS</option>
+                            <option value="45">PS</option>
+                            <option value="46">Москва</option>
+                            <option value="48">ФО КП</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12 col-md-3">
+                        <label class="dashed">Ссылка на документ: </label>
+                    </div>
+                    <div class="col-sm-12 col-md-9">
+                        <input type="text" name="doc-url" id="doc-url" class="doc-url">
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-sm-3">
+
+                <div class="product-upload-img float-right">
+                    <p class="add-text add-img-text"></p>
+                    <div class="product-img-prev">
+                        <div class="img-loader" style="display:none"></div>
+                        <div class="prev-img" style="margin-bottom: 10px;"><img
+                                {% if not question.image_url %}
+                                    src="{{ no_img }}">
+                                {% else %}
+                                    src="{{ question.image_url }}">
+                                {% endif %}</div>
+                        <form id="imageformvop" method="post" noengine="true" enctype="multipart/form-data">
+                            <label for="photoimg" class="btn btn-success btn-sm"><span><i class="fa fa-plus-circle"
+                                                                                          aria-hidden="true"></i>Загрузить</span></label>
+                            <a href="javascript:void(0);" class="add-img-wrapper" style="display: none;">
+                                <input type="file" name="photoimg" id="photoimg" class="add-img">
+                                <input type="hidden" name="photoImgName" value="">
+                                <input type="hidden" name="action" value="">
+                            </a>
+                        </form>
+                        <a href="javascript:void(0);" class="delete-img-upload tool-tip-top btn btn-danger btn-sm"
+                           title="" id="1"><span><i class="fa fa-times" aria-hidden="true"></i>Удалить</span></a>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+{% endblock %}

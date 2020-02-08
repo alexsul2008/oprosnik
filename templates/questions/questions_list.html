@@ -1,0 +1,41 @@
+{% extends 'questions/base_question.html' %}
+
+{% if user.is_authenticated %}
+
+    {% block content %}
+
+            <div class="row mb-4 count-total">
+                <div class="col-sm-12">
+                    <h1 class="cover-heading">Вопрос <span id="count">{{ count_questions }}</span> из <span id="total">{{ total_questions }}</span></h1>
+                </div>
+            </div>
+
+            <div class="row question">
+                <div class="" role="alert">
+                    <h4 class="alert-heading">{{ questions_list }}</h4>
+                    <hr>
+                </div>
+            </div>
+            <div class="row mb-5 answers">
+                <div class="list-group w-100 ">
+
+                    {% for i in answers_list %}
+                        <a type="button" class="list-group-item list-group-item-action" data-id="{{ i.id }}"
+                           data-approved="{{ i.approved }}" href="{% url 'questionajax' %}">{{ i.description }}</a>
+                    {% endfor %}
+
+                </div>
+            </div>
+            <div class="row">
+
+                    <a type="button" class="btn btn-lg btn-secondary nextVopros first" data-id="{{ questions_list.id }}"
+                            data-next="{{ list_next }}" data-i="1" href="{% url 'nextquestion' %}">Следующий</a>
+
+            </div>
+
+
+    {% endblock content %}
+{% else %}
+    <h2>Вы не авторизованы</h2>
+{% endif %}
+

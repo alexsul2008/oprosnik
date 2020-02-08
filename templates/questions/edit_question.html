@@ -1,0 +1,102 @@
+{% extends 'questions/base_question.html' %}
+
+
+{% block content %}
+
+
+
+    <table class="table  table-dark">
+        <thead>
+        <tr>
+            <th scope="col" class="checkbox">
+                <div class="checkbox tip custom-control custom-checkbox" title="Отметить все">
+                    <input type="checkbox" id="c1" class="custom-control-input">
+                    <label for="c1" class="check-all-page custom-control-label"></label>
+                </div>
+            </th>
+            <th scope="col" style="width:40px;"></th>
+            <th scope="col" style="width:40px">№</th>
+            <th scope="col" class="text-center">Вопрос</th>
+            <th scope="col">Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for list_question in list_questions %}
+            <tr id="{{ list_question.id }}" data-id="{{ list_question.id }}">
+                <td class="check-align">
+                    <div class="checkbox custom-control custom-checkbox">
+                        <input type="checkbox" id="vop-{{ list_question.id }}" name="product-check" class="custom-control-input">
+                        <label for="vop-{{ list_question.id }}" class="custom-control-label"></label>
+                    </div>
+                </td>
+                <td class="mover" style="width:40px;"><i class="fa fa-arrows"></i></td>
+                <td scope="row">{{ list_question.id }}</td>
+                <td>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-9">
+                                <div class="mr-auto watch-user">
+                                    {{list_question.description}}
+                                </div>
+                            </div>
+                            <div class="col-1 pl-0 pr-0">
+                                <img class="uploads img-thumbnail"
+                                     {% if not list_question.image_url %}
+                                        src="{{ no_img }}">
+                                     {% else %}
+                                        src="{{ list_question.image_url }}">
+                                     {% endif %}
+
+                            </div>
+                            <div class="col-2">
+                                <button type="button" name="role"
+                                        class="btn btn-outline-light pt-1 pb-1 w-100 edit-row-group-vop role-vop"
+                                        data-id="{{ list_question.id }}" data-group="0">{{list_question.groups}}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td class="actions">
+                    <ul class="action-list text-right">
+                        <li class="edit-row" data-id="{{ list_question.id }}" data-type="">
+                           <a class="tool-tip-bottom fa fa-pencil" href="{{ list_question.get_absolute_url }}" data-toggle="modal" data-target="#exampleModalCenter" title="Редактировать"></a>
+                        </li>
+                        <li class="{% if list_question.in_active == True %}visible active{% endif %} tool-tip-bottom  " data-id="{{ list_question.id }}" title="{% if list_question.in_active == True %}Активен{% else %}Не активен{% endif %}">
+                            <a class="fa fa-lightbulb-o {% if list_question.in_active == True %}active{% endif %} " href="javascript:void(0);"></a>
+                        </li>
+                        <li class="delete-row" data-id="{{ list_question.id }}">
+                            <a class="tool-tip-bottom  fa fa-trash" href="javascript:void(0);" title="Удалить"></a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+
+
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalCenterTitle">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

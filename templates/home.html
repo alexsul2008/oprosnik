@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+
+    <h2>Домашняя страница</h2>
+    <p>Добро пожаловать, {% if user.is_authenticated %}{{ user.username }}{% else %}Гость{% endif %}!</p>
+    <p>
+        <strong>Total users registered: </strong> {{ count }}
+    </p>
+    <p>{{ user.group }}</p>
+{% endblock %}
