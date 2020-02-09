@@ -63,26 +63,16 @@ def question_ajax(request):
 
 # @csrf_protect
 @csrf_exempt
-# def next_question(request, pk):
 def next_question(request):
-    # print(request.POST)
-    # print(request.POST['id'])
-
     massivId = request.session["listQuestionsCook"]
     total = int(request.session["total_questions"])
     counts = int(request.session["count_questions"])
     # print('count до: ', counts)
     counts += 1
     request.session["count_questions"] = counts
-    # print('count после: ', request.session["count_questions"])
-    # print(massivId)
     data = {}
-    # answers_list = ()
-    # pk = request.POST['id']
     del massivId[0]
-    print(len(massivId))
     if len(massivId) == 0:
-
         data['flag'] = 1
 
         session_key = request.session.session_key
@@ -125,9 +115,7 @@ def next_question(request):
         # print(vop_not)
         url = '/statistics/'
         data['url'] = url
-        # return redirect('statistics')
         return JsonResponse(data)
-        # return render('questions/statistics_questions.html', context)
     else:
         data['flag'] = 0
         pk = massivId[0]
@@ -140,10 +128,7 @@ def next_question(request):
         except:
             last = massivId[0]
 
-        # print(massivId)
         request.session["listQuestionsCook"] = massivId
-
-
         # data['questions_list'] = serializers.serialize('json', questions_list, indent=2, ensure_ascii=False, fields=('description','image', 'doc_url'))
         data['questions_list'] = questions_list
         data['answers'] = serializers.serialize('json', answers_list, indent=2, ensure_ascii=False, fields=('description', 'approved'))
@@ -157,9 +142,8 @@ def next_question(request):
 
 @login_required
 def statistics(request):
-    # user_groups = Group.objects.get(user=request.user)
     context = {
-        'user_groups' : Group.objects.get(user=request.user)
+        'user_groups': Group.objects.get(user=request.user)
     }
     template = 'questions/statistics_questions.html'
     return render(request, template, context)
