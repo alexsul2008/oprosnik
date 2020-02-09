@@ -111,22 +111,31 @@ $(document).ready(function(){
 
                                 $('div.question').after(html);
 
-                                $('a.nextVopros').attr('data-i', data.count).attr('data-id', data.id).attr('data-next', data.next);
+
+                                // if (data.count != data.total) {
+                                 $('a.nextVopros').attr('data-i', data.count).attr('data-id', data.id).attr('data-next', data.next);
+                                // } else {
+                                //     $('a.nextVopros').attr('data-i', data.count).attr('data-id', data.id).attr('data-next', data.next).attr('href', '/statistics/');
+                                // }
                             }else{
-                                $('h1.cover-heading>span').remove();
-                                $('div.question').remove();
-                                $('div.answers').remove();
-                                $('a.nextVopros').remove();
-                                $('h1.cover-heading').text('Результат Вашего теста:')
+                                // $('h1.cover-heading>span').remove();
+                                // $('div.question').remove();
+                                // $('div.answers').remove();
+                                // $('a.nextVopros').remove();
+                                // $('h1.cover-heading').text('Результат Вашего теста:');
+                                //
+                                // var result = JSON.parse(data.vop);
+                                //
+                                //
+                                console.log(data.url);
 
-
-                                console.log(data)
-
-
-                                var result = JSON.parse(data.list_not_ok_questions);
-
-                                console.log(result)
-                                var html = '<div class="row mb-5"><div class="list-group w-100 ">'
+                                // var html = '<div class="row mb-5"><div class="list-group w-100 ">'
+                                // for (i = 0; i < result.length; i++) {
+                                //     html += '<a type="button" class="list-group-item list-group-item-action btn-danger" data-id="' + result[i].pk + '">' + result[i].fields.description + '</a>';
+                                // }
+                                //
+                                // html += '</div></div>';
+                                // $('h1.cover-heading').after(html);
                             }
                      }
                  });

@@ -24,7 +24,11 @@
                 {% if request.user.is_authenticated %}
                     <li class="nav-item ">{% url 'questions' as url_questions %}
                         <a class="nav-link {% if url_questions == request.path %}active{% endif %}"
-                               href="{% url 'questions' %}">Вопросы <span class="sr-only">(current)</span></a>
+                               href="{% url 'questions' %}">Вопросы</a>
+                     </li>
+                    <li class="nav-item ">{% url 'statistics' as url_statistics %}
+                        <a class="nav-link {% if url_statistics == request.path %}active{% endif %}"
+                               href="{% url 'statistics' %}">Статистика</a>
                      </li>
                 {% endif %}
                 {% if user_groups.id == 7 or user_groups.id == 9 %}

@@ -22,7 +22,6 @@ import random
 import json
 
 
-
 @csrf_protect
 # @csrf_exempt
 def question_ajax(request):
@@ -46,9 +45,11 @@ def question_ajax(request):
     vop = request.POST.get('vop')
     otv = request.POST.get('otv')
 
-    ua = UsersAnswers.objects.create(user=user, group_user=group_user, session_key=session_key, not_ok_vop=not_ok_vop, not_ok_otv=not_ok_otv, ok_vop=ok_vop, ok_otv=ok_otv)
+    ua = UsersAnswers.objects.create(user=user, group_user=group_user, session_key=session_key, not_ok_vop=not_ok_vop,
+                                     not_ok_otv=not_ok_otv, ok_vop=ok_vop, ok_otv=ok_otv)
 
-    new_ua = UsersAnswer.objects.create(user=user, group_user=group_user, session_key=session_key, correct=correct, vop=vop, otv=otv)
+    new_ua = UsersAnswer.objects.create(user=user, group_user=group_user, session_key=session_key, correct=correct,
+                                        vop=vop, otv=otv)
     print(new_ua)
 
     data['ok_vop'] = ok_vop
@@ -86,31 +87,45 @@ def next_question(request):
 
         session_key = request.session.session_key
         # list_not_ok_questions = UsersAnswers.objects.all().filter(session_key=session_key).exclude(not_ok_vop__isnull=True).values('not_ok_vop')
-        list_not_ok_questions = UsersAnswers.objects.all().filter(session_key=session_key).exclude(not_ok_vop=0)
-        count_not_ok_questions = list_not_ok_questions.count()
-        print(session_key)
-        print(list_not_ok_questions)
-        print(count_not_ok_questions)
-
-        data['list_not_ok_questions'] = serializers.serialize('json', list_not_ok_questions, indent=2, fields=('not_ok_vop','not_ok_otv'))
-        # data['list_not_ok_questions'] = serializers.serialize('json', list_not_ok_questions, indent=2)
-        data['count_not_ok_questions'] = count_not_ok_questions
-        print(data)
-
-        # list_questions = Questions.objects.filter(groups=user_groups.id, in_active = 'True').values_list('pk', flat=True).order_by('id')
-
-        list_vop = UsersAnswer.objects.all().filter(session_key=session_key, correct=False).values_list('vop', 'otv')
-        print(list_vop)
-        print(list_vop.query)
-        # count_vop = len(list_vop)
-        # print(count_vop)
-        vop_not = {}
-        for i in list_vop:
-            # print(i[0])
-            vop_not[i] = Questions.objects.get(id=i[0]).description
-        print(vop_not)
-
-
+        # list_not_ok_questions = UsersAnswers.objects.all().filter(session_key=session_key).exclude(not_ok_vop=0)
+        # count_not_ok_questions = list_not_ok_questions.count()
+        # print(session_key)
+        # print(list_not_ok_questions)
+        # print(count_not_ok_questions)
+        #
+        # data['list_not_ok_questions'] = serializers.serialize('json', list_not_ok_questions, indent=2,
+        #                                                       fields=('not_ok_vop', 'not_ok_otv'))
+        # # data['list_not_ok_questions'] = serializers.serialize('json', list_not_ok_questions, indent=2)
+        # data['count_not_ok_questions'] = count_not_ok_questions
+        # print(data)
+        #
+        # # list_questions = Questions.objects.filter(groups=user_groups.id, in_active = 'True').values_list('pk', flat=True).order_by('id')
+        #
+        # list_vop = UsersAnswer.objects.filter(session_key=session_key, correct=False).values_list('vop', 'otv')
+        # print(list_vop)
+        # print(list_vop.query)
+        #
+        # vop_not = {}
+        # # id_vop = [int(i[0]) for i in list_vop]
+        # # id_vop_l = list(id_vop)
+        # id_vop = []
+        # for i in list_vop:
+        #     id_vop.append(i[0])
+        #
+        # print(id_vop)
+        # #
+        # # vop_not = Questions.objects.filter(pk__in=id_vop).all()
+        # not_vop_list = Questions.objects.filter(pk__in=id_vop).all()
+        #
+        # data['vop'] = serializers.serialize('json', not_vop_list, indent=2, ensure_ascii=False, fields=('description'))
+        # print(vop_not)
+        # vop_not['otv'] = Answers.objects.filter(vop_id_id=pk)
+        # print(vop_not_all.query)
+        # vop_not['vop'] = Questions.objects.get(id=[list_vop[0]]).description
+        # print(vop_not)
+        url = '/statistics/'
+        data['url'] = url
+        # return redirect('statistics')
         return JsonResponse(data)
         # return render('questions/statistics_questions.html', context)
     else:
@@ -131,7 +146,7 @@ def next_question(request):
 
         # data['questions_list'] = serializers.serialize('json', questions_list, indent=2, ensure_ascii=False, fields=('description','image', 'doc_url'))
         data['questions_list'] = questions_list
-        data['answers'] = serializers.serialize('json', answers_list, indent=2, ensure_ascii=False, fields=('description','approved'))
+        data['answers'] = serializers.serialize('json', answers_list, indent=2, ensure_ascii=False, fields=('description', 'approved'))
         data['next'] = last
         data['id'] = massivId[0]
         data['count'] = counts
@@ -139,6 +154,15 @@ def next_question(request):
 
         return JsonResponse(data)
 
+
+@login_required
+def statistics(request):
+    # user_groups = Group.objects.get(user=request.user)
+    context = {
+        'user_groups' : Group.objects.get(user=request.user)
+    }
+    template = 'questions/statistics_questions.html'
+    return render(request, template, context)
 
 
 
@@ -148,14 +172,15 @@ def random_question(array):
     return array
 
 
-
 class HomeListView(ListView):
     model = Questions
     template_name = 'home.html'
     context_object_name = 'questions_list'
 
+
 @login_required
 def QuestionsViews(request):
+    # print(request)
     user_groups = Group.objects.get(user=request.user)
 
     session_key = request.session.session_key
@@ -163,9 +188,9 @@ def QuestionsViews(request):
         request.session.cycle_key()
 
     if (user_groups.id == 7 or user_groups.id == 9):
-        list_pk = Questions.objects.filter(in_active = 'True').values_list('pk', flat=True).order_by('id')
+        list_pk = Questions.objects.filter(in_active='True').values_list('pk', flat=True).order_by('id')
     else:
-        list_pk = Questions.objects.filter(groups=user_groups.id, in_active = 'True').values_list('pk', flat=True).order_by('id')
+        list_pk = Questions.objects.filter(groups=user_groups.id, in_active='True').values_list('pk', flat=True).order_by('id')
 
     massiv = random_question(list(list_pk))
     # """Проверяем наличие списка ID вопросов в куки, есле нет его, то создаем"""
@@ -177,7 +202,6 @@ def QuestionsViews(request):
 
     if not 'count_questions' in request.session:
         request.session["count_questions"] = 1
-
 
     print(request.session["listQuestionsCook"])
     print(request.session["total_questions"])
@@ -210,6 +234,8 @@ def QuestionsViews(request):
     return render(request, template, context)
 
 
+
+
 @login_required
 def edit_questions(request):
     user_groups = Group.objects.get(user=request.user)
@@ -221,11 +247,13 @@ def edit_questions(request):
     template = 'questions/edit_question.html'
     return render(request, template, context)
 
+
 @login_required
 def question_detail(request, pk):
     question = Questions.objects.get(id=pk)
     answers = Answers.objects.filter(vop_id=pk)
     return render(request, 'questions/question_detail.html', context={'question': question, 'answers': answers})
+
 
 @login_required
 def login(request):
@@ -241,9 +269,6 @@ def login(request):
     return render(request, 'registration/login.html', {
         'form': form
     })
-
-
-
 
 # @login_required
 # def questions(request):
@@ -287,10 +312,6 @@ def login(request):
 #     }
 #     template = 'home.html'
 #     return render(request, template, context)
-
-
-
-
 
 
 # Все пользователи
