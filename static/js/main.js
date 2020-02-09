@@ -128,6 +128,7 @@ $(document).ready(function(){
                                 //
                                 //
                                 console.log(data.url);
+                                window.location.href = data.url;
 
                                 // var html = '<div class="row mb-5"><div class="list-group w-100 ">'
                                 // for (i = 0; i < result.length; i++) {
