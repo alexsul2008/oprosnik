@@ -31,7 +31,7 @@
                                href="{% url 'statistics' %}">Статистика</a>
                      </li>
                 {% endif %}
-                {% if user_groups.id == 7 or user_groups.id == 9 %}
+                {% if user_groups.id == 1 or user_groups.id == 2 %}
                      <li class="nav-item ">{% url 'edit_questions' as edit_questions %}
                          <a class="nav-link {% if edit_questions == request.path %}active{% endif %}"
                                    href="{% url 'edit_questions' %}">Редактирование <span class="sr-only">(current)</span></a>

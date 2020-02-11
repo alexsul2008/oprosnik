@@ -1,4 +1,4 @@
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, User
 from django.db import models
 from django.shortcuts import reverse
 
@@ -77,3 +77,7 @@ class UsersAnswer(models.Model):
 
     def __str__(self):
         return "%s, %s, %s" % (self.correct, self.vop, self.otv)
+
+    class Meta:
+        verbose_name = "Ответ пользователя"
+        verbose_name_plural = "Ответы пользователей"

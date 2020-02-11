@@ -5,9 +5,10 @@ from .views import *
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth import views
+from .views import View
 
 urlpatterns = [
-    # path('', views.QuestionsView.as_view()),
+    path('proba/', QuestionsViewList.as_view()),
     # path('',  HomeListView.as_view(), name='home'),
     path('', QuestionsViews, name='questions'),
     path('edit_questions/', edit_questions, name='edit_questions'),

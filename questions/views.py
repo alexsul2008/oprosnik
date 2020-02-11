@@ -1,3 +1,4 @@
+
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.forms import UserCreationForm
@@ -15,11 +16,23 @@ from django.views.decorators.csrf import csrf_protect, csrf_exempt
 
 from django.core import serializers
 
-from django.db.models import Count
+from django.db.models import Count, Q
 
 from questions.models import UsersAnswers, Questions, Answers, UsersAnswer
 import random
 import json
+
+class QuestionsViewList(ListView):
+    model = UsersAnswer
+    template_name = 'usersanswer_list.html'
+
+    def get_queryset(self):
+        queryset = UsersAnswer.objects.filter(
+            Q(user__in=self.request.GET.getlist("user"))
+        )
+        return queryset
+
+
 
 
 @csrf_protect
@@ -28,7 +41,7 @@ def question_ajax(request):
     session_key = request.session.session_key
     user = request.user.username
     group_user = Group.objects.get(user=request.user).id
-    print(request.POST)
+    # print(request.POST)
     data = {}
     if request.POST.get('correct') == '1':
         ok_vop = request.POST.get('vop')
@@ -50,8 +63,6 @@ def question_ajax(request):
 
     new_ua = UsersAnswer.objects.create(user=user, group_user=group_user, session_key=session_key, correct=correct,
                                         vop=vop, otv=otv)
-    print(new_ua)
-
     data['ok_vop'] = ok_vop
     data['ok_otv'] = ok_otv
     data['not_ok_vop'] = not_ok_vop
@@ -142,6 +153,23 @@ def next_question(request):
 
 @login_required
 def statistics(request):
+    user = request.user.username
+    answer_user_not_ok = UsersAnswer.objects.all().filter(user=user, correct=False).values_list('vop', 'otv', 'session_key').order_by()
+
+    # vop_not_list = []
+    for i in answer_user_not_ok:
+        print(i[2])
+        vop_not_id = UsersAnswer.objects.filter(session_key=i[2]).values('vop')
+
+    print(vop_not_id)
+
+    # print(User.objects.annotate(group_count=Count('groups')).filter(group_count=0).count())
+    # print(UsersAnswer.objects.filter(user=user, correct=False).order_by('session_key'))
+    us_count = UsersAnswer.objects.filter(user=user, correct=False).order_by('session_key').all()
+    # print(us_count)
+    # print(us_count.query)
+
+    # print(answer_user_not_ok.query)
     context = {
         'user_groups': Group.objects.get(user=request.user)
     }
@@ -171,7 +199,7 @@ def QuestionsViews(request):
     if not session_key:
         request.session.cycle_key()
 
-    if (user_groups.id == 7 or user_groups.id == 9):
+    if (user_groups.id == 1 or user_groups.id == 2):
         list_pk = Questions.objects.filter(in_active='True').values_list('pk', flat=True).order_by('id')
     else:
         list_pk = Questions.objects.filter(groups=user_groups.id, in_active='True').values_list('pk', flat=True).order_by('id')

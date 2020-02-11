@@ -3,7 +3,7 @@ from django.forms import Textarea
 from django.utils.safestring import mark_safe
 
 
-from .models import Questions, Answers
+from .models import Questions, Answers, UsersAnswer
 
 
 
@@ -88,6 +88,16 @@ class QuestionAdmin(admin.ModelAdmin):
     deactivate.allowed_permissions = ('change',)
 
 
+@admin.register(UsersAnswer)
+class UserAnswerAdmin(admin.ModelAdmin):
+    list_display = ('user', 'session_key', )
+    list_filter = ('user', )
+    ordering = ('session_key', )
+    # raw_id_fields = ('user', )
+
+    class Meta:
+        model = UsersAnswer
+        fields = "__all__"
 
 
 #admin.site.register(Questions, QuestionAdmin)
