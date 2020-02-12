@@ -81,3 +81,10 @@ class UsersAnswer(models.Model):
     class Meta:
         verbose_name = "Ответ пользователя"
         verbose_name_plural = "Ответы пользователей"
+
+
+class WorkPermitUsers(models.Model):
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    # flag = models.BooleanField(verbose_name="Разрешение на опрос", default=False)
+    session_key = models.CharField(max_length=150, verbose_name="Сессия пользователя")
+    date_passage = models.DateField(verbose_name="Дата прохождения опроса", auto_now_add=True)

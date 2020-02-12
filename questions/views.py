@@ -18,7 +18,7 @@ from django.core import serializers
 
 from django.db.models import Count, Q
 
-from questions.models import UsersAnswers, Questions, Answers, UsersAnswer
+from questions.models import UsersAnswers, Questions, Answers, UsersAnswer, WorkPermitUsers
 import random
 import json
 
@@ -81,12 +81,17 @@ def next_question(request):
     # print('count до: ', counts)
     counts += 1
     request.session["count_questions"] = counts
+
     data = {}
     del massivId[0]
     if len(massivId) == 0:
         data['flag'] = 1
-
+        # user = auth.get_user(request).username
+        user_id = User.objects.get(username=request.user.username).id
+        # print(user_id)
         session_key = request.session.session_key
+        user_work_perm = WorkPermitUsers.objects.create(user_id_id=user_id, session_key=session_key)
+
         # list_not_ok_questions = UsersAnswers.objects.all().filter(session_key=session_key).exclude(not_ok_vop__isnull=True).values('not_ok_vop')
         # list_not_ok_questions = UsersAnswers.objects.all().filter(session_key=session_key).exclude(not_ok_vop=0)
         # count_not_ok_questions = list_not_ok_questions.count()
@@ -153,25 +158,73 @@ def next_question(request):
 
 @login_required
 def statistics(request):
-    user = request.user.username
-    answer_user_not_ok = UsersAnswer.objects.all().filter(user=user, correct=False).values_list('vop', 'otv', 'session_key').order_by()
+    user = User.objects.get(username=request.user.username)
+    # print(user.id)
+    sess_list_user = WorkPermitUsers.objects.filter(user_id_id=user.id).values('session_key')
+    # print(sess_list_user.query)
+    # print(sess_list_user)
+
+
+    data = {}
+    i = 0
+    for sess in sess_list_user:
+        answer_user_not_ok = []
+        # answer_user_not_ok.append(UsersAnswer.objects.filter(session_key=sess['session_key'], correct=False).values_list('vop', 'otv'))
+        answer_user_not_ok.append(UsersAnswer.objects.filter(session_key=sess['session_key'], correct=False).values_list('vop', 'otv'))
+        data[i] = answer_user_not_ok
+        i += 1
+
+    print(data)
+
+    # data = dict(answer_user_not_ok)
+    # print(data)
+    # for answer_user in answer_user_not_ok:
+    #     data.append(answer_user)
+
+    # for key, value in answer_user_not_ok.items():
+    #     print(key, value)
+    # # print(answer_user_not_ok)
+    # answer_vop = []
+    # data = {}
+    # i = 0
+    # for answer_user in answer_user_not_ok:
+    #     # print(answer_user)
+    #     data[i] = answer_user
+    #     answer_vop = []
+    #     for vop in data[i]:
+    #         answer_vop.append(Questions.objects.get(pk=int(vop[0])).description)
+    #
+    #     data[i]['vop'] = answer_vop
+    #     # print(answer_vop)
+    #     i += 1
+    #
+    #     # answer_vop.append(answer_user)
+    #     # for vop in answer_user:
+    #     #     answer_vop.append(Questions.objects.get(pk=int(vop[0])).description)
+
+    # print(data[0])
+    # print('-----')
+    # print(data)
+
+
 
     # vop_not_list = []
-    for i in answer_user_not_ok:
-        print(i[2])
-        vop_not_id = UsersAnswer.objects.filter(session_key=i[2]).values('vop')
-
-    print(vop_not_id)
+    # for i in answer_user_not_ok:
+    #     print(i[2])
+    #     vop_not_id = UsersAnswer.objects.filter(session_key=i[2]).values('vop')
+    #
+    # print(vop_not_id)
 
     # print(User.objects.annotate(group_count=Count('groups')).filter(group_count=0).count())
     # print(UsersAnswer.objects.filter(user=user, correct=False).order_by('session_key'))
-    us_count = UsersAnswer.objects.filter(user=user, correct=False).order_by('session_key').all()
+    # us_count = UsersAnswer.objects.filter(user=user, correct=False).order_by('session_key').all()
     # print(us_count)
     # print(us_count.query)
 
     # print(answer_user_not_ok.query)
     context = {
-        'user_groups': Group.objects.get(user=request.user)
+        'user_groups': Group.objects.get(user=request.user),
+        'answer_user_not_ok': answer_user_not_ok,
     }
     template = 'questions/statistics_questions.html'
     return render(request, template, context)
