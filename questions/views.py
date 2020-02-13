@@ -170,6 +170,7 @@ def statistics(request):
     i = 0
     vop_list = {}
     vop_ans = {}
+    list_all = {}
     for sess in sess_list_user:
 
 
@@ -192,15 +193,16 @@ def statistics(request):
         # data[0].append(list(Questions.objects.filter(pk__in=ids_vop).values('description')))
         # data[1].append(str(count))
 
-        vop_list = {
-            'vop': list(Questions.objects.filter(pk__in=ids_vop).values('description')),
-            'answ': list(ids_otv),
-            'vop_count': str(count),
-        }
+        # vop_list = {
+        #     'vop': list(Questions.objects.filter(pk__in=ids_vop).values('description')),
+        #     'answ': list(ids_otv),
+        #     'vop_count': str(count),
+        # }
+        vop_list['vop'] = list(Questions.objects.filter(pk__in=ids_vop).values('description'))
+        vop_list['answ'] = ids_otv
+        vop_list['vop_count'] = str(count)
 
-        vop_ans[i] = list(zip(vop_list['vop'], vop_list['answ']))
-        # print(vop_ans)
-
+        vop_ans = list(zip(vop_list['vop'], vop_list['answ']))
 
 
         # data[i] = vop_list['vop_count']
@@ -215,8 +217,9 @@ def statistics(request):
         # data.append(answer_user_not_ok)
         # print(data[i])
         i += 1
-    # print(data)
+    print(data)
 
+    # print(vop_ans)
 
     # print(list(zip(data[0], data[1])))
 

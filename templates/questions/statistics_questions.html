@@ -9,12 +9,19 @@
 
 
     {% for items in answer_user %}
-        <h4>{{ items.vop_count }}</h4>
-        <h6>{{ items.answ }}</h6>
-        {% for item in items.vop %}
+        {{ items }}
 
-            <h4>{{ item.description }}</h4>
+        {% for item in items %}
 
+
+                {% for it in item %}
+                    <h6>{{ it.description }}</h6>
+
+
+
+
+
+                {% endfor %}
 
 
 
