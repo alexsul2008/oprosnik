@@ -5,7 +5,23 @@
 {% block content %}
     <h1>Статистика вопросов</h1>
     {{ user_groups }}
-    {{ answer_user_not_ok }}
+    {{ answer_user }}
+
+
+    {% for items in answer_user %}
+        <h3>{{ items.vop_count }}</h3>
+
+        {% for item in items.vop  %}
+
+                <h4>{{ item.description }}</h4>
+
+
+
+
+        {% endfor %}
+
+    {% endfor %}
+
 
 {% endblock content %}
 {% else %}
