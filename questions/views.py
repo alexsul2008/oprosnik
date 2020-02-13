@@ -164,27 +164,27 @@ def statistics(request):
     # print(sess_list_user.query)
     # print(sess_list_user)
 
-
+    # answer_user_not_ok = []
     # data = [[], []]
     data = []
     i = 0
     vop_list = {}
+    vop_ans = {}
     for sess in sess_list_user:
 
 
-        # answer_user_not_ok = []
         # answer_user_not_ok.append(UsersAnswer.objects.filter(session_key=sess['session_key'], correct=False).values_list('vop', 'otv'))
         # answer_user_not_ok = UsersAnswer.objects.filter(session_key=sess['session_key'], correct=False).values_list('vop', flat=True)
-        answers_user_not_ok = UsersAnswer.objects.filter(session_key=sess['session_key'], correct=False).values_list('vop', 'otv')
+        answer_user_not_ok = UsersAnswer.objects.filter(session_key=sess['session_key'], correct=False).values_list('vop', 'otv')
 
-        count = len(answers_user_not_ok)
-        # print(list(answer_user_not_ok))
+        count = len(answer_user_not_ok)
+        # print(answer_user_not_ok)
         # vop, otv = answer_user_not_ok
         # print(vop)
         # print(otv)
         # Questions.objects.get(id=[int(j[0]) for j in list(answer_user_not_ok)])
-        ids_vop = [j[0] for j in answers_user_not_ok]
-        ids_otv = [j[1] for j in answers_user_not_ok]
+        ids_vop = [j[0] for j in answer_user_not_ok]
+        ids_otv = [j[1] for j in answer_user_not_ok]
         # print(ids_vop)
         # print(ids_otv)
 
@@ -194,9 +194,17 @@ def statistics(request):
 
         vop_list = {
             'vop': list(Questions.objects.filter(pk__in=ids_vop).values('description')),
-            'answ': ids_otv,
+            'answ': list(ids_otv),
             'vop_count': str(count),
         }
+
+        vop_ans[i] = list(zip(vop_list['vop'], vop_list['answ']))
+        # print(vop_ans)
+
+
+
+        # data[i] = vop_list['vop_count']
+        # print(data[i])
         data.append(vop_list)
         # print(vop_list.items())
         # answers_list = Answers.objects.filter(vop_id_id=questions_list.id)
@@ -207,7 +215,7 @@ def statistics(request):
         # data.append(answer_user_not_ok)
         # print(data[i])
         i += 1
-    print(data)
+    # print(data)
 
 
     # print(list(zip(data[0], data[1])))
