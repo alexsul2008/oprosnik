@@ -16,7 +16,7 @@ from django.views.decorators.csrf import csrf_protect, csrf_exempt
 
 from django.core import serializers
 
-from django.db.models import Count, Q
+from django.db.models import Count, Q, F
 
 from questions.models import UsersAnswers, Questions, Answers, UsersAnswer, WorkPermitUsers
 import random
@@ -158,85 +158,115 @@ def next_question(request):
 
 @login_required
 def statistics(request):
-    user = User.objects.get(username=request.user.username)
-    # print(user.id)
-    sess_list_user = WorkPermitUsers.objects.filter(user_id_id=user.id).values('session_key')
+    # user = User.objects.get(username=request.user.username)
+    # # print(user.id)
+    # sess_list_user = WorkPermitUsers.objects.filter(user_id_id=user.id).values('session_key')
     # print(sess_list_user.query)
     # print(sess_list_user)
 
     # answer_user_not_ok = []
     # data = [[], []]
-    data = []
-    i = 0
-    vop_list = {}
-    vop_ans = {}
-    list_all = {}
-    for sess in sess_list_user:
+    # data = []
+    # i = 0
+    # vop_list = {}
+    # vop_ans = {}
+    # list_all = {}
+    # for sess in sess_list_user:
+    #
+    #
+    #     # answer_user_not_ok.append(UsersAnswer.objects.filter(session_key=sess['session_key'], correct=False).values_list('vop', 'otv'))
+    #     # answer_user_not_ok = UsersAnswer.objects.filter(session_key=sess['session_key'], correct=False).values_list('vop', flat=True)
+    #     answer_user_not_ok = UsersAnswer.objects.filter(session_key=sess['session_key'], correct=False).values_list('vop', 'otv')
+    #
+    #     count = len(answer_user_not_ok)
+    #     # print(answer_user_not_ok)
+    #     # vop, otv = answer_user_not_ok
+    #     # print(vop)
+    #     # print(otv)
+    #     # Questions.objects.get(id=[int(j[0]) for j in list(answer_user_not_ok)])
+    #     ids_vop = [j[0] for j in answer_user_not_ok]
+    #     ids_otv = [j[1] for j in answer_user_not_ok]
+    #     print(ids_vop)
+    #     # print(ids_otv)
+    #
+    #     # data.append(('vop', Questions.objects.filter(pk__in=ids).values('description')), ('count_vop', answers_user_not_ok.count())
+    #     # data[0].append(list(Questions.objects.filter(pk__in=ids_vop).values('description')))
+    #     # data[1].append(str(count))
+    #
+    #     vop_list = {
+    #         'vop': list(Questions.objects.filter(pk__in=ids_vop).values('description')),
+    #         'answ': list(ids_otv),
+    #         'vop_count': str(count),
+    #     }
+    #     # vop_list['vop'] = list(Questions.objects.filter(pk__in=ids_vop).all())
+    #     # vop_list['answ'] = ids_otv
+    #     # vop_list['vop_count'] = str(count)
+    #
+    #     vop_ans = list(zip(vop_list['vop'], vop_list['answ']))
+    #
+    #     print(vop_list)
+    #     # data[i] = vop_list['vop_count']
+    #     # print(data[i])
+    #     data.append(vop_list)
+    #     # print(vop_list.items())
+    #     # answers_list = Answers.objects.filter(vop_id_id=questions_list.id)
+    #     # print(dict(data))
+    #     # data[i] = answer_user_not_ok
+    #     # for key, value in data[i].items():
+    #     #     print(key, value)
+    #     # data.append(answer_user_not_ok)
+    #     # print(data[i])
+    #     # i += 1
+    # # print(list(data))
+    #
+    # # print(vop_ans)
+    #
+    # # print(list(zip(data[0], data[1])))
+    #
+    # # answers_user = zip(data[0], data[1])
+    #
+    # # data = dict(answer_user_not_ok)
+    # # print(data)
+    # # for answer_user in answer_user_not_ok:
+    # #     data.append(answer_user)
+    #
+    # # for key, value in data.items():
+    # #     print(key, value)
+    #     # print(value)
+
+    # nurseries = Nursery.objects.filter(title__startswith="Moscow").values_list('pk', flat=True)
+    # Pet.objects.filter(nursery__in=list(nurseries))
 
 
-        # answer_user_not_ok.append(UsersAnswer.objects.filter(session_key=sess['session_key'], correct=False).values_list('vop', 'otv'))
-        # answer_user_not_ok = UsersAnswer.objects.filter(session_key=sess['session_key'], correct=False).values_list('vop', flat=True)
-        answer_user_not_ok = UsersAnswer.objects.filter(session_key=sess['session_key'], correct=False).values_list('vop', 'otv')
 
-        count = len(answer_user_not_ok)
-        # print(answer_user_not_ok)
-        # vop, otv = answer_user_not_ok
-        # print(vop)
-        # print(otv)
-        # Questions.objects.get(id=[int(j[0]) for j in list(answer_user_not_ok)])
-        ids_vop = [j[0] for j in answer_user_not_ok]
-        ids_otv = [j[1] for j in answer_user_not_ok]
-        # print(ids_vop)
-        # print(ids_otv)
+    list_user = {}
+    user = User.objects.get(username=request.user.username)
+    sessions_lists_users = WorkPermitUsers.objects.filter(user_id_id=user.id).values('session_key', 'date_passage')
 
-        # data.append(('vop', Questions.objects.filter(pk__in=ids).values('description')), ('count_vop', answers_user_not_ok.count())
-        # data[0].append(list(Questions.objects.filter(pk__in=ids_vop).values('description')))
-        # data[1].append(str(count))
+    list_quests = []
+    for sessions_us in sessions_lists_users:
 
-        # vop_list = {
-        #     'vop': list(Questions.objects.filter(pk__in=ids_vop).values('description')),
-        #     'answ': list(ids_otv),
-        #     'vop_count': str(count),
-        # }
-        vop_list['vop'] = list(Questions.objects.filter(pk__in=ids_vop).values('description'))
-        vop_list['answ'] = ids_otv
-        vop_list['vop_count'] = str(count)
+        # nurseries = UsersAnswer.objects.filter(session_key=sessions_us['session_key'], correct=False).values_list('vop', flat=True)
+        # nurseries_quest = Questions.objects.filter(id__in=list(UsersAnswer.objects.filter(session_key=sessions_us['session_key'], correct=False).values_list('vop', flat=True)))
+        #
+        # print(nurseries_quest)
 
-        vop_ans = list(zip(vop_list['vop'], vop_list['answ']))
+        # print(UsersAnswer.objects.filter(session_key=sessions['session_key'], correct=False).values('vop', 'otv').annotate(cnt=Count('vop')).count())
+        list_vop_count = {
+            'count': UsersAnswer.objects.filter(session_key=sessions_us['session_key'], correct=False).count(),
+            # 'vop': list(UsersAnswer.objects.filter(session_key=sessions_us['session_key'], correct=False).values('vop', 'otv')),
+            'vop': list(Questions.objects.filter(id__in=list(UsersAnswer.objects.filter(session_key=sessions_us['session_key'], correct=False).values_list('vop', flat=True)))),
+        }
+        # print(list_vop_count['vop'])
+        list_quests.append(list_vop_count)
 
 
-        # data[i] = vop_list['vop_count']
-        # print(data[i])
-        data.append(vop_list)
-        # print(vop_list.items())
-        # answers_list = Answers.objects.filter(vop_id_id=questions_list.id)
-        # print(dict(data))
-        # data[i] = answer_user_not_ok
-        # for key, value in data[i].items():
-        #     print(key, value)
-        # data.append(answer_user_not_ok)
-        # print(data[i])
-        i += 1
-    print(data)
+    # print(list_quests)
 
-    # print(vop_ans)
-
-    # print(list(zip(data[0], data[1])))
-
-    # answers_user = zip(data[0], data[1])
-
-    # data = dict(answer_user_not_ok)
-    # print(data)
-    # for answer_user in answer_user_not_ok:
-    #     data.append(answer_user)
-
-    # for key, value in data.items():
-    #     print(key, value)
-        # print(value)
 
     context = {
         'user_groups': Group.objects.get(user=request.user),
-        'answer_user': data,
+        'user_stat': list_quests,
     }
     template = 'questions/statistics_questions.html'
     return render(request, template, context)

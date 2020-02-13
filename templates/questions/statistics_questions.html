@@ -5,30 +5,16 @@
 {% block content %}
     <h1>Статистика вопросов</h1>
     {{ user_groups }}
-    {{ answer_user }}
+    {{ user_stat }}
 
 
-    {% for items in answer_user %}
-        {{ items }}
-
-        {% for item in items %}
-
-
-                {% for it in item %}
-                    <h6>{{ it.description }}</h6>
-
-
-
-
-
-                {% endfor %}
-
-
+    {% for items in user_stat %}
+        <h3> {{ items.count }}</h3>
+        {% for item in items.vop %}
+                <h6>{{ item }} - {{ ans }}</h6>
 
         {% endfor %}
-
     {% endfor %}
-
 
 {% endblock content %}
 {% else %}
