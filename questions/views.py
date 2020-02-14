@@ -241,21 +241,34 @@ def statistics(request):
 
     list_user = {}
     user = User.objects.get(username=request.user.username)
-    sessions_lists_users = WorkPermitUsers.objects.filter(user_id_id=user.id).values('session_key', 'date_passage')
+    sessions_lists_users = WorkPermitUsers.objects.filter(user_id_id=user.id).values('session_key', 'date_passage').order_by('-date_passage')
 
     list_quests = []
     for sessions_us in sessions_lists_users:
 
         # nurseries = UsersAnswer.objects.filter(session_key=sessions_us['session_key'], correct=False).values_list('vop', flat=True)
         # nurseries_quest = Questions.objects.filter(id__in=list(UsersAnswer.objects.filter(session_key=sessions_us['session_key'], correct=False).values_list('vop', flat=True)))
-        #
-        # print(nurseries_quest)
+        # #
+        user_answers = UsersAnswer.objects.filter(session_key=sessions_us['session_key'], correct=False).values_list('vop', flat=True).order_by('vop')
+        user_answers_quest = Questions.objects.filter(id__in=user_answers).values_list('id', 'description').order_by('id')
+        user_answers_answers = Answers.objects.filter(vop_id_id__in=Questions.objects.filter(id__in=list(user_answers))).values_list('id', 'description', 'approved').order_by('vop_id_id', 'id')
+
+        # print(user_answers.query)
+        # print(user_answers)
+        # print(user_answers_quest.query)
+        # print(user_answers_quest)
+        print(user_answers_answers.query)
+        print(user_answers_answers)
+
 
         # print(UsersAnswer.objects.filter(session_key=sessions['session_key'], correct=False).values('vop', 'otv').annotate(cnt=Count('vop')).count())
         list_vop_count = {
             'count': UsersAnswer.objects.filter(session_key=sessions_us['session_key'], correct=False).count(),
+            'date_passage': sessions_us['date_passage'],
             # 'vop': list(UsersAnswer.objects.filter(session_key=sessions_us['session_key'], correct=False).values('vop', 'otv')),
-            'vop': list(Questions.objects.filter(id__in=list(UsersAnswer.objects.filter(session_key=sessions_us['session_key'], correct=False).values_list('vop', flat=True)))),
+            # 'vop': list(Questions.objects.filter(id__in=list(UsersAnswer.objects.filter(session_key=sessions_us['session_key'], correct=False).values_list('vop', flat=True))).order_by('id')),
+            'vop': list(Questions.objects.filter(id__in=UsersAnswer.objects.filter(session_key=sessions_us['session_key'], correct=False).values_list('vop', flat=True).order_by('vop')).values('id', 'description').order_by('id')),
+
         }
         # print(list_vop_count['vop'])
         list_quests.append(list_vop_count)

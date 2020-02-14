@@ -10,8 +10,11 @@
 
     {% for items in user_stat %}
         <h3> {{ items.count }}</h3>
-        {% for item in items.vop %}
-                <h6>{{ item }} - {{ ans }}</h6>
+        <h5>{{ items.date_passage|date:"j E Y" }}</h5>
+
+        {% for vops in items.vop %}
+            <h6> {{ vops.id }} - {{ vops.description }}</h6>
+
 
         {% endfor %}
     {% endfor %}
