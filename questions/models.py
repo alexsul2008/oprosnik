@@ -53,7 +53,7 @@ class Answers(models.Model):
     """Ответы на вопросы"""
     description = models.TextField("Текст ответа")
     vop_id = models.ForeignKey(
-        Questions, on_delete=models.CASCADE
+        Questions, on_delete=models.CASCADE, related_name='answer'
     )
     approved = models.BooleanField("Правильность ответа", default=False)
 

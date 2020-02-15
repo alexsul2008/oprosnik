@@ -5,16 +5,25 @@
 {% block content %}
     <h1>Статистика вопросов</h1>
     {{ user_groups }}
-    {{ user_stat }}
+{#    {{ user_stat }}#}
 
 
-    {% for items in user_stat %}
-        <h3> {{ items.count }}</h3>
-        <h5>{{ items.date_passage|date:"j E Y" }}</h5>
 
-        {% for vops in items.vop %}
-            <h6> {{ vops.id }} - {{ vops.description }}</h6>
+    {% for items_all in user_stat %}
+        <h3> {{ items_all.count }}</h3>
+        <h5>{{ items_all.date_passage|date:"j E Y" }}</h5>
 
+
+        {% for vops in items_all.vop %}
+
+
+                <p>id вопроса: {{ vops.id }} - {{ vops.question_new }}</p>
+                <ul>
+                    {% for answ in vops.new_answ %}
+                        {{ vops.otv }}
+                        <li style="{% if answ.id in vops.otv %}color: red{% endif %}">id ответа: {{ answ.id }} - {{ answ.description }} - {% if answ.approved == True %}Правильный ответ{% else %}Не правильный ответ{% endif %} - <h6> {{ items_all.count }}</h6></li>
+                    {% endfor %}
+                </ul>
 
         {% endfor %}
     {% endfor %}
