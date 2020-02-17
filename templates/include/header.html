@@ -1,11 +1,11 @@
 <header>
 
-        <h1 class="navbar-brand">ОКУ КП и VAS</h1>
+        <h1 class="navbar-brand align-middle m-4">ОКУ КП и VAS</h1>
 
 
         {% if request.user.is_authenticated %}
-            <button type="button" class="btn btn-primary">
-                {{ user.last_name }} {{ user.first_name }} <span class="badge badge-light">{{ user_groups }}</span>
+            <button type="button" class="btn btn-primary align-middle">
+                {{ user.last_name }} {{ user.first_name }} <span class="badge badge-light align-middle p-2">{{ user_groups }}</span>
             </button>
         {% endif %}
 
