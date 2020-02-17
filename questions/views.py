@@ -166,10 +166,10 @@ def statistics(request):
 
     models_users_answers = UsersAnswer
     # models_users_answers_all = models_users_answers.objects.all()
-
-    # print(models_users_answers_all.filter(session_key='z6b5thstws7obortgazj6gdlmbrpydhl', correct=True).values('vop'))
-
-
+    # print(models_users_answers.objects.values())
+    # q = models_users_answers.objects.values()
+    # q1 = q[0]['session_key']
+    # print(q1)
 
     list_quests = []
 
@@ -177,9 +177,9 @@ def statistics(request):
         user_answers = models_users_answers.objects.filter(session_key=sessions_us['session_key'], correct=False).values_list('vop', flat=True).order_by('vop')
 
         models_users_answers_all = models_users_answers.objects.filter(session_key=sessions_us['session_key']).count()
-        print(models_users_answers_all)
+        # print(models_users_answers_all)
         percents = len(user_answers) * 100 / models_users_answers_all
-        print(round(percents))
+        # print(round(percents))
 
         user_answers_quest = []
         for i in user_answers:
